@@ -6,8 +6,12 @@
             require_once("c://xampp/htdocs/login/model/homeModel.php");
             $this->MODEL = new homeModel();
         }
-        public function guardarUsuario($correo,$contraseña){
-            $valor = $this->MODEL->agregarNuevoUsuario($this->limpiarcorreo($correo),$this->encriptarcontraseña($this->limpiarcadena($contraseña)));
+        //incorporacion rut
+        public function guardarUsuario($correo,$contraseña,$RUT){
+            $correoLimpio = $this->limpiarCorreo($correo);
+            $contraseñaEncriptada = $this->encriptarContraseña($this->limpiarCadena($contraseña));
+            $rutLimpio = $this->limpiarRUT($RUT);
+            $valor = $this->MODEL->agregarNuevoUsuario($correoLimpio, $contraseñaEncriptada, $RUTLimpio);
             return $valor;
         }
         public function limpiarcadena($campo){
@@ -22,6 +26,12 @@
             $campo = htmlspecialchars($campo);
             return $campo;
         }
+        
+        public function limpiarRUT($rut) {
+            $rut = strtoupper(trim($rut));
+            $rut = preg_replace('/[^0-9K]/', '', $rut); 
+            return $rut;
+            
         public function encriptarcontraseña($contraseña){
             return password_hash($contraseña,PASSWORD_DEFAULT);
         }
